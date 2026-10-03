@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - AI News Recommendation System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            display: flex;
+        }
+
+        /* LEFT SIDE */
+
+        .left-section {
+            width: 50%;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .left-section h1 {
+            font-size: 34px;
+            margin-bottom: 20px;
+        }
+
+        .left-section p {
+            font-size: 17px;
+            line-height: 1.6;
+            opacity: 0.95;
+        }
+
+        .features {
+            margin-top: 30px;
+        }
+
+        .feature {
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        /* RIGHT SIDE */
+
+        .right-section {
+            width: 50%;
+            padding: 40px;
+        }
+
+        .right-section h2 {
+            text-align: center;
+            color: #1e293b;
+            margin-bottom: 25px;
+        }
+
+        .form-box {
+            margin-bottom: 35px;
+        }
+
+        .form-box h3 {
+            color: #334155;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #475569;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        button {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .register-button {
+            background: #7c3aed;
+        }
+
+        .register-button:hover {
+            background: #6d28d9;
+        }
+
+        .message {
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        .success {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e2e8f0;
+            margin: 25px 0;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-home a {
+            color: #2563eb;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-home a:hover {
+            text-decoration: underline;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 700px) {
+
+            .container {
+                flex-direction: column;
+            }
+
+            .left-section,
+            .right-section {
+                width: 100%;
+            }
+
+            .left-section {
+                padding: 30px;
+            }
+
+            .right-section {
+                padding: 30px;
+            }
+
+            .left-section h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <!-- LEFT SECTION -->
+
+        <div class="left-section">
+
+            <h1>📰 AI News</h1>
+
+            <p>
+                Welcome to the AI-Powered News Aggregation
+                and Personalized Recommendation System.
+            </p>
+
+            <div class="features">
+
+                <div class="feature">
+                    📰 Latest News
+                </div>
+
+                <div class="feature">
+                    🤖 AI-Powered Recommendations
+                </div>
+
+                <div class="feature">
+                    🎯 Personalized Content
+                </div>
+
+                <div class="feature">
+                    📊 Multiple News Categories
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SECTION -->
+
+        <div class="right-section">
+
+            <h2>Welcome</h2>
+
+
+            <!-- ================= REGISTER ================= -->
+
+            <div class="form-box">
+
+                <h3>Create Account</h3>
+
+                <form id="registerForm">
+
+                    <div class="input-group">
+
+                        <label for="registerUsername">
+                            Username
+                        </label>
+
+                        <input
+                            type="text"
+                            id="registerUsername"
+                            placeholder="Enter username"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label for="registerEmail">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="registerEmail"
+                            placeholder="Enter email"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label for="registerPassword">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="registerPassword"
+                            placeholder="Enter password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="register-button"
+                    >
+                        Register
+                    </button>
+
+                </form>
+
+
+                <div
+                    id="registerMessage"
+                    class="message"
+                ></div>
+
+            </div>
+
+
+            <div class="divider"></div>
+
+
+            <!-- ================= LOGIN ================= -->
+
+            <div class="form-box">
+
+                <h3>Login</h3>
+
+                <form id="loginForm">
+
+                    <div class="input-group">
+
+                        <label for="loginEmail">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            id="loginEmail"
+                            placeholder="Enter your email"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="input-group">
+
+                        <label for="loginPassword">
+                            Password
+                        </label>
+
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            placeholder="Enter your password"
+                            required
+                        >
+
+                    </div>
+
+
+                    <button type="submit">
+                        Login
+                    </button>
+
+                </form>
+
+
+                <div
+                    id="loginMessage"
+                    class="message"
+                ></div>
+
+            </div>
+
+
+            <!-- BACK TO HOME -->
+
+            <div class="back-home">
+
+                <a href="/">
+                    ← Back to News Dashboard
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        // ==========================================
+        // REGISTER
+        // ==========================================
+
+        document
+            .getElementById("registerForm")
+            .addEventListener(
+                "submit",
+                async function(event) {
+
+                    event.preventDefault();
+
+                    const username =
+                        document
+                            .getElementById(
+                                "registerUsername"
+                            )
+                            .value
+                            .trim();
+
+                    const email =
+                        document
+                            .getElementById(
+                                "registerEmail"
+                            )
+                            .value
+                            .trim();
+
+                    const password =
+                        document
+                            .getElementById(
+                                "registerPassword"
+                            )
+                            .value;
+
+                    const message =
+                        document.getElementById(
+                            "registerMessage"
+                        );
+
+                    try {
+
+                        const response =
+                            await fetch(
+                                "/register",
+                                {
+                                    method: "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body:
+                                        JSON.stringify({
+                                            username:
+                                                username,
+
+                                            email:
+                                                email,
+
+                                            password:
+                                                password
+                                        })
+                                }
+                            );
+
+
+                        const data =
+                            await response.json();
+
+
+                        console.log(
+                            "Register response:",
+                            data
+                        );
+
+
+                        if (data.success) {
+
+                            message.textContent =
+                                "Registration successful! You can now login.";
+
+                            message.className =
+                                "message success";
+
+
+                            document
+                                .getElementById(
+                                    "registerForm"
+                                )
+                                .reset();
+
+                        } else {
+
+                            message.textContent =
+                                data.message;
+
+                            message.className =
+                                "message error";
+                        }
+
+
+                    } catch (error) {
+
+                        console.error(
+                            "Registration error:",
+                            error
+                        );
+
+                        message.textContent =
+                            "Unable to connect to the server.";
+
+                        message.className =
+                            "message error";
+                    }
+
+                }
+            );
+
+
+        // ==========================================
+        // LOGIN
+        // ==========================================
+
+        document
+            .getElementById("loginForm")
+            .addEventListener(
+                "submit",
+                async function(event) {
+
+                    event.preventDefault();
+
+
+                    const email =
+                        document
+                            .getElementById(
+                                "loginEmail"
+                            )
+                            .value
+                            .trim();
+
+
+                    const password =
+                        document
+                            .getElementById(
+                                "loginPassword"
+                            )
+                            .value;
+
+
+                    const message =
+                        document.getElementById(
+                            "loginMessage"
+                        );
+
+
+                    try {
+
+                        const response =
+                            await fetch(
+                                "/login",
+                                {
+                                    method: "POST",
+
+                                    headers: {
+                                        "Content-Type":
+                                            "application/json"
+                                    },
+
+                                    body:
+                                        JSON.stringify({
+                                            email:
+                                                email,
+
+                                            password:
+                                                password
+                                        })
+                                }
+                            );
+
+
+                        const data =
+                            await response.json();
+
+
+                        console.log(
+                            "Login response:",
+                            data
+                        );
+
+
+                        // LOGIN SUCCESS
+
+                        if (data.success) {
+
+                            // Save JWT token
+                            localStorage.setItem(
+                                "token",
+                                data.token
+                            );
+
+
+                            // Save username
+                            localStorage.setItem(
+                                "username",
+                                data.username
+                            );
+
+
+                            message.textContent =
+                                "Login successful! Redirecting...";
+
+                            message.className =
+                                "message success";
+
+
+                            // Redirect to dashboard
+                            setTimeout(
+                                function() {
+
+                                    window.location.replace("/");
+
+                                },
+                                500
+                            );
+
+
+                        } else {
+
+                            message.textContent =
+                                data.message;
+
+                            message.className =
+                                "message error";
+                        }
+
+
+                    } catch (error) {
+
+                        console.error(
+                            "Login error:",
+                            error
+                        );
+
+
+                        message.textContent =
+                            "Unable to connect to the server.";
+
+                        message.className =
+                            "message error";
+                    }
+
+                }
+            );
+
+    </script>
+
+</body>
+
+</html>

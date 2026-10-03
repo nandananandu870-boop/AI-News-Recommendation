@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI News Recommendation System</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+
+        /* ==========================================
+           HEADER
+        ========================================== */
+
+        header {
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #7c3aed
+            );
+
+            color: white;
+
+            padding: 25px 50px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-left h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header-left p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #usernameDisplay {
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background: white;
+            color: #2563eb;
+
+            border: none;
+
+            padding: 9px 16px;
+
+            border-radius: 7px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background: #e2e8f0;
+        }
+
+
+        /* ==========================================
+           CATEGORIES
+        ========================================== */
+
+        .category-container {
+            padding: 25px 50px 10px;
+        }
+
+        .category-container h2 {
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .category-btn {
+            border: none;
+
+            padding: 10px 18px;
+
+            border-radius: 20px;
+
+            background: white;
+
+            color: #334155;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            box-shadow:
+                0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .category-btn:hover {
+            background: #dbeafe;
+        }
+
+        .category-btn.active {
+            background: #2563eb;
+            color: white;
+        }
+
+
+        /* ==========================================
+           NEWS SECTION
+        ========================================== */
+
+        .news-container {
+            padding: 30px 50px;
+        }
+
+        .news-container h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+
+        /* ==========================================
+           NEWS GRID
+        ========================================== */
+
+        #newsContainer,
+        #recommendedContainer {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(
+                    auto-fit,
+                    minmax(300px, 1fr)
+                );
+
+            gap: 25px;
+        }
+
+
+        /* ==========================================
+           NEWS CARD
+        ========================================== */
+
+        .news-card {
+
+            background: white;
+
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 4px 12px rgba(0, 0, 0, 0.08);
+
+            transition:
+                transform 0.2s;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+        }
+
+
+        .news-image {
+
+            width: 100%;
+
+            height: 190px;
+
+            object-fit: cover;
+
+            background: #e2e8f0;
+        }
+
+
+        .news-content {
+            padding: 18px;
+        }
+
+
+        .category-label {
+
+            display: inline-block;
+
+            background: #dbeafe;
+
+            color: #1d4ed8;
+
+            padding: 5px 10px;
+
+            border-radius: 15px;
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            margin-bottom: 10px;
+        }
+
+
+        .news-title {
+
+            font-size: 19px;
+
+            line-height: 1.4;
+
+            margin-bottom: 10px;
+
+            color: #0f172a;
+        }
+
+
+        .news-description {
+
+            font-size: 14px;
+
+            color: #64748b;
+
+            line-height: 1.5;
+
+            margin-bottom: 15px;
+        }
+
+
+        .news-source {
+
+            font-size: 12px;
+
+            color: #94a3b8;
+
+            margin-bottom: 15px;
+        }
+
+
+        .read-btn {
+
+            display: inline-block;
+
+            background: #2563eb;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 9px 15px;
+
+            border-radius: 6px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        .read-btn:hover {
+            background: #1d4ed8;
+        }
+
+
+        /* ==========================================
+           LOADING / EMPTY
+        ========================================== */
+
+        .loading {
+
+            text-align: center;
+
+            font-size: 18px;
+
+            color: #64748b;
+
+            padding: 50px;
+        }
+
+
+        .no-news {
+
+            text-align: center;
+
+            font-size: 18px;
+
+            color: #64748b;
+
+            padding: 50px;
+        }
+
+
+        /* ==========================================
+           FOOTER
+        ========================================== */
+
+        footer {
+
+            text-align: center;
+
+            padding: 25px;
+
+            margin-top: 30px;
+
+            color: #64748b;
+
+            font-size: 13px;
+        }
+
+
+        /* ==========================================
+           MOBILE
+        ========================================== */
+
+        @media (max-width: 700px) {
+
+            header {
+
+                padding: 20px;
+
+                flex-direction: column;
+
+                gap: 15px;
+
+                align-items: flex-start;
+            }
+
+            .category-container,
+            .news-container {
+
+                padding-left: 20px;
+
+                padding-right: 20px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ==========================================
+         HEADER
+    ========================================== -->
+
+    <header>
+
+        <div class="header-left">
+
+            <h1>
+                📰 AI News Recommendation System
+            </h1>
+
+            <p>
+                Personalized news powered by AI
+            </p>
+
+        </div>
+
+
+        <div class="user-section">
+
+            <span id="usernameDisplay">
+                Welcome!
+            </span>
+
+            <button
+                class="logout-btn"
+                onclick="logout()"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- ==========================================
+         CATEGORIES
+    ========================================== -->
+
+    <section class="category-container">
+
+        <h2>
+            Browse Categories
+        </h2>
+
+
+        <div class="categories">
+
+
+            <button
+                class="category-btn active"
+                onclick="loadNews('all', this)"
+            >
+                All
+            </button>
+
+
+            <button
+                class="category-btn"
+                onclick="loadNews('technology', this)"
+            >
+                💻 Technology
+            </button>
+
+
+            <button
+                class="category-btn"
+                onclick="loadNews('business', this)"
+            >
+                💼 Business
+            </button>
+
+
+            <button
+                class="category-btn"
+                onclick="loadNews('sports', this)"
+            >
+                ⚽ Sports
+            </button>
+
+
+            <button
+                class="category-btn"
+                onclick="loadNews('science', this)"
+            >
+                🔬 Science
+            </button>
+
+
+            <button
+                class="category-btn"
+                onclick="loadNews('health', this)"
+            >
+                🏥 Health
+            </button>
+
+
+            <button
+                class="category-btn"
+                onclick="loadNews('entertainment', this)"
+            >
+                🎬 Entertainment
+            </button>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         PERSONALIZED RECOMMENDATIONS
+    ========================================== -->
+
+    <section class="news-container">
+
+        <h2>
+            🤖 Recommended For You
+        </h2>
+
+
+        <div
+            id="recommendedContainer"
+            class="loading"
+        >
+            Loading personalized recommendations...
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         LATEST NEWS
+    ========================================== -->
+
+    <section class="news-container">
+
+        <h2>
+            📰 Latest News
+        </h2>
+
+
+        <div
+            id="newsContainer"
+            class="loading"
+        >
+            Loading news...
+        </div>
+
+    </section>
+
+
+
+    <!-- ==========================================
+         FOOTER
+    ========================================== -->
+
+    <footer>
+
+        AI-Powered News Aggregation and
+        Personalized Recommendation System
+
+    </footer>
+
+
+
+    <!-- ==========================================
+         JAVASCRIPT
+    ========================================== -->
+
+    <script>
+
+
+        // ==========================================
+        // SHOW USERNAME
+        // ==========================================
+
+        const username =
+            localStorage.getItem("username");
+
+        const token =
+            localStorage.getItem("token");
+
+
+        if (username) {
+
+            document.getElementById(
+                "usernameDisplay"
+            ).textContent =
+                "Welcome, " + username + "!";
+
+        } else {
+
+            document.getElementById(
+                "usernameDisplay"
+            ).textContent =
+                "Welcome!";
+
+        }
+
+
+
+        // ==========================================
+        // LOAD PERSONALIZED RECOMMENDATIONS
+        // ==========================================
+
+        async function loadRecommendations() {
+
+            const container =
+                document.getElementById(
+                    "recommendedContainer"
+                );
+
+
+            const savedToken =
+                localStorage.getItem("token");
+
+
+            // User not logged in
+
+            if (!savedToken) {
+
+                container.innerHTML =
+                    `
+                    <div class="no-news">
+                        Please login to see personalized recommendations.
+                    </div>
+                    `;
+
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/recommendations",
+                        {
+                            method: "GET",
+
+                            headers: {
+                                "Authorization":
+                                    "Bearer " +
+                                    savedToken
+                            }
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                console.log(
+                    "Recommendation response:",
+                    data
+                );
+
+
+                // ==================================
+                // API ERROR
+                // ==================================
+
+                if (!data.success) {
+
+                    container.innerHTML =
+                        `
+                        <div class="no-news">
+                            ${data.message}
+                        </div>
+                        `;
+
+                    return;
+                }
+
+
+                const articles =
+                    data.articles;
+
+
+                // ==================================
+                // NO RECOMMENDATIONS
+                // ==================================
+
+                if (
+                    !articles ||
+                    articles.length === 0
+                ) {
+
+                    container.innerHTML =
+                        `
+                        <div class="no-news">
+                            No personalized recommendations yet.
+                            Read some news first!
+                        </div>
+                        `;
+
+                    return;
+                }
+
+
+                // ==================================
+                // CLEAR LOADING
+                // ==================================
+
+                container.innerHTML = "";
+
+
+                // ==================================
+                // DISPLAY RECOMMENDATIONS
+                // ==================================
+
+                articles.forEach(
+                    function(article) {
+
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        card.className =
+                            "news-card";
+
+
+                        const image =
+                            article.image ||
+                            "https://via.placeholder.com/600x400?text=News";
+
+
+                        let sourceName =
+                            "Unknown Source";
+
+
+                        if (
+                            article.source &&
+                            article.source.name
+                        ) {
+
+                            sourceName =
+                                article.source.name;
+
+                        }
+
+
+                        const description =
+                            article.description ||
+                            "No description available.";
+
+
+                        card.innerHTML = `
+
+                            <img
+                                class="news-image"
+                                src="${image}"
+                                alt="News Image"
+
+                                onerror="
+                                    this.src='https://via.placeholder.com/600x400?text=News'
+                                "
+                            >
+
+
+                            <div class="news-content">
+
+
+                                <span class="category-label">
+
+                                    ${article.category || "News"}
+
+                                </span>
+
+
+                                <h3 class="news-title">
+
+                                    ${article.title || "Untitled News"}
+
+                                </h3>
+
+
+                                <p class="news-description">
+
+                                    ${description}
+
+                                </p>
+
+
+                                <p class="news-source">
+
+                                    Source: ${sourceName}
+
+                                </p>
+
+
+                                <a
+
+                                    class="read-btn"
+
+                                    href="${article.url}"
+
+                                    target="_blank"
+
+                                    onclick="recordInteraction(
+                                        '${article.url}',
+                                        '${article.category}'
+                                    )"
+
+                                >
+
+                                    Read More →
+
+                                </a>
+
+
+                            </div>
+
+                        `;
+
+
+                        container.appendChild(
+                            card
+                        );
+
+                    }
+                );
+
+
+            } catch (error) {
+
+
+                console.error(
+                    "Recommendation error:",
+                    error
+                );
+
+
+                container.innerHTML =
+                    `
+                    <div class="no-news">
+
+                        Unable to load
+                        personalized recommendations.
+
+                    </div>
+                    `;
+
+            }
+
+        }
+
+
+
+        // ==========================================
+        // LOAD NEWS
+        // ==========================================
+
+        async function loadNews(
+            category = "all",
+            clickedButton = null
+        ) {
+
+
+            const container =
+                document.getElementById(
+                    "newsContainer"
+                );
+
+
+            container.innerHTML =
+                `
+                <div class="loading">
+                    Loading news...
+                </div>
+                `;
+
+
+            try {
+
+
+                let url =
+                    "/news";
+
+
+                if (
+                    category !== "all"
+                ) {
+
+                    url =
+                        "/news?category=" +
+                        encodeURIComponent(
+                            category
+                        );
+
+                }
+
+
+                const response =
+                    await fetch(url);
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Failed to load news"
+                    );
+
+                }
+
+
+                const articles =
+                    await response.json();
+
+
+                // ==================================
+                // NO NEWS
+                // ==================================
+
+                if (
+                    !articles ||
+                    articles.length === 0
+                ) {
+
+                    container.innerHTML =
+                        `
+                        <div class="no-news">
+
+                            No news articles found.
+
+                        </div>
+                        `;
+
+                    return;
+                }
+
+
+                // ==================================
+                // CLEAR CONTAINER
+                // ==================================
+
+                container.innerHTML = "";
+
+
+                // ==================================
+                // DISPLAY NEWS
+                // ==================================
+
+                articles.forEach(
+                    function(article) {
+
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        card.className =
+                            "news-card";
+
+
+                        const image =
+                            article.image ||
+                            "https://via.placeholder.com/600x400?text=News";
+
+
+                        let sourceName =
+                            "Unknown Source";
+
+
+                        if (
+                            article.source &&
+                            article.source.name
+                        ) {
+
+                            sourceName =
+                                article.source.name;
+
+                        }
+
+
+                        const description =
+                            article.description ||
+                            "No description available.";
+
+
+                        card.innerHTML = `
+
+                            <img
+
+                                class="news-image"
+
+                                src="${image}"
+
+                                alt="News Image"
+
+                                onerror="
+                                    this.src='https://via.placeholder.com/600x400?text=News'
+                                "
+
+                            >
+
+
+                            <div class="news-content">
+
+
+                                <span class="category-label">
+
+                                    ${article.category || "News"}
+
+                                </span>
+
+
+                                <h3 class="news-title">
+
+                                    ${article.title || "Untitled News"}
+
+                                </h3>
+
+
+                                <p class="news-description">
+
+                                    ${description}
+
+                                </p>
+
+
+                                <p class="news-source">
+
+                                    Source: ${sourceName}
+
+                                </p>
+
+
+                                <a
+
+                                    class="read-btn"
+
+                                    href="${article.url}"
+
+                                    target="_blank"
+
+                                    onclick="recordInteraction(
+                                        '${article.url}',
+                                        '${article.category}'
+                                    )"
+
+                                >
+
+                                    Read More →
+
+                                </a>
+
+
+                            </div>
+
+                        `;
+
+
+                        container.appendChild(
+                            card
+                        );
+
+                    }
+                );
+
+
+            } catch (error) {
+
+
+                console.error(
+                    "News loading error:",
+                    error
+                );
+
+
+                container.innerHTML =
+                    `
+                    <div class="no-news">
+
+                        Unable to load news.
+
+                        <br><br>
+
+                        Please make sure
+                        the Flask server is running.
+
+                    </div>
+                    `;
+
+            }
+
+
+            // ==================================
+            // ACTIVE CATEGORY BUTTON
+            // ==================================
+
+            if (clickedButton) {
+
+
+                document
+                    .querySelectorAll(
+                        ".category-btn"
+                    )
+                    .forEach(
+                        function(button) {
+
+                            button.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+
+                clickedButton.classList.add(
+                    "active"
+                );
+
+            }
+
+        }
+
+
+
+        // ==========================================
+        // RECORD USER INTERACTION
+        // ==========================================
+
+        async function recordInteraction(
+            articleUrl,
+            category
+        ) {
+
+
+            const savedToken =
+                localStorage.getItem(
+                    "token"
+                );
+
+
+            if (!savedToken) {
+
+                return;
+
+            }
+
+
+            try {
+
+
+                await fetch(
+                    "/interaction",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                token:
+                                    savedToken,
+
+                                article_url:
+                                    articleUrl,
+
+                                category:
+                                    category,
+
+                                action:
+                                    "read"
+
+                            })
+
+                    }
+                );
+
+
+            } catch (error) {
+
+
+                console.error(
+                    "Interaction error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+
+        // ==========================================
+        // LOGOUT
+        // ==========================================
+
+        function logout() {
+
+
+            localStorage.removeItem(
+                "token"
+            );
+
+
+            localStorage.removeItem(
+                "username"
+            );
+
+
+            window.location.href =
+                "/login-page";
+
+        }
+
+
+
+        // ==========================================
+        // LOAD DATA WHEN PAGE OPENS
+        // ==========================================
+
+        loadRecommendations();
+
+        loadNews("all");
+
+
+    </script>
+
+
+</body>
+
+</html>
